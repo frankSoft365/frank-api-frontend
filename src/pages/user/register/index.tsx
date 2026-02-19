@@ -1,18 +1,13 @@
-import { Footer } from '@/components';
-import { register } from '@/services/ant-design-pro/api';
-import {
-  LockOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { Helmet, history } from '@umijs/max';
 import { App, Tabs } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
+import { Footer } from '@/components';
+import { register } from '@/services/ant-design-pro/api';
 import Settings from '../../../../config/defaultSettings';
+
 const useStyles = createStyles(({ token }) => {
   return {
     action: {
@@ -67,7 +62,7 @@ const Register: React.FC = () => {
       if (res.code === 0 && res.data > 0) {
         const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);
-        setInterval(() => window.location.href = '/user/login', 500);
+        setInterval(() => (window.location.href = '/user/login'), 500);
         return;
       }
     } catch (error) {
@@ -94,8 +89,8 @@ const Register: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/furoro.webp" />}
-          title="User Center"
+          logo={<img alt="logo" src="/frank.jpg" />}
+          title="Frank API"
           initialValues={{
             autoLogin: true,
           }}

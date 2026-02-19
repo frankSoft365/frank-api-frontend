@@ -1,20 +1,15 @@
-import { Footer } from '@/components';
-import { login } from '@/services/ant-design-pro/api';
-import {
-  LockOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormText,
-} from '@ant-design/pro-components';
-import { Helmet, useModel, history } from '@umijs/max';
-import { Alert, App, Tabs } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { LoginForm, ProFormText } from '@ant-design/pro-components';
+import { Helmet, history, useModel } from '@umijs/max';
+import { App, Tabs } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
-import Settings from '../../../../config/defaultSettings';
+import { Footer } from '@/components';
+import { login } from '@/services/ant-design-pro/api';
 import { setToken } from '@/utils/token';
+import Settings from '../../../../config/defaultSettings';
+
 const useStyles = createStyles(({ token }) => {
   return {
     action: {
@@ -110,8 +105,8 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/furoro.webp" />}
-          title="User Center"
+          logo={<img alt="logo" src="/frank.jpg" />}
+          title="Frank API"
           initialValues={{
             autoLogin: true,
           }}
