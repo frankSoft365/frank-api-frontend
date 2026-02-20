@@ -44,6 +44,65 @@ declare namespace API {
     succesList?: CurrentUser[];
   }
 
+  // 接口管理 -------------------------------------- start ------------------
+  type InterfaceInfoPageParams = {
+    name?: string;
+    url?: string;
+    description?: string;
+    status?: number;
+    method?: string;
+    current?: number;
+    pageSize?: number;
+  }
+
+  type InterfaceInfoAddParams = {
+    name?: string;
+    url?: string;
+    description?: string;
+    method?: string;
+    requestHeader?: string;
+    responseHeader?: string;
+  }
+
+  type InterfaceInfoUpdateParams = {
+    id?: string;
+    name?: string;
+    url?: string;
+    description?: string;
+    method?: string;
+    requestHeader?: string;
+    responseHeader?: string;
+    status?: number;
+  }
+
+  type InterfaceInfoDeleteParams = {
+    id?: string;
+  }
+
+  type InterfaceInfoPageResult = {
+    records?: InterfaceInfo[];
+    total?: number;
+    size?: number;
+    current?: number;
+    pages?: number;
+  }
+
+  type InterfaceInfo = {
+    id?: string;
+    createTime?: Date;
+    updateTime?: Date;
+    isDelete?: number;
+    description?: string;
+    name?: string;
+    url?: string;
+    requestHeader?: string;
+    responseHeader?: string;
+    status?: number;
+    method?: string;
+    userId?: string;
+  }
+  // 接口管理 --------------------------------- end -----------------------
+
   type PageParams = {
     current?: number;
     pageSize?: number;

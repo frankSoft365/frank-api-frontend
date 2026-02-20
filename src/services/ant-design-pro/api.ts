@@ -78,6 +78,62 @@ export async function uploadAvatar(body: FormData, options?: { [key: string]: an
   });
 }
 
+/** 获取分页接口信息 POST /api/interfaceInfo/list/page */
+export async function listInterfaceInfoByPage(body: API.InterfaceInfoPageParams, options?: { [key: string]: any }) {
+  return request<API.Result<API.InterfaceInfoPageResult>>('/api/interfaceInfo/list/page', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 添加一个接口 POST /api/interfaceInfo/add */
+export async function addInterfaceInfo(body: API.InterfaceInfoAddParams, options?: { [key: string]: any }) {
+  return request<API.Result<number>>('/api/interfaceInfo/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 根据id查询接口信息 GET /api/interfaceInfo/get/vo?id=248389289820203 */
+export async function getInterfaceInfoById(params?: { id: string }, options?: { [key: string]: any }) {
+  return request<API.Result<API.InterfaceInfo>>('/api/interfaceInfo/get/vo', {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  });
+}
+
+/** 修改接口 POST /api/interfaceInfo/update */
+export async function updateInterfaceInfo(body: API.InterfaceInfoUpdateParams, options?: { [key: string]: any }) {
+  return request<API.Result<void>>('/api/interfaceInfo/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 删除接口 POST /api/interfaceInfo/delete */
+export async function deleteInterfaceInfo(body: API.InterfaceInfoDeleteParams, options?: { [key: string]: any }) {
+  return request<API.Result<void>>('/api/interfaceInfo/delete', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
 
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {

@@ -103,7 +103,6 @@ export const errorConfig: RequestConfig = {
       const token = getToken();
       if (token) {
         if (config.headers) {
-          console.log('设置token');
           config.headers.Authorization = `Bearer ${token}`;
         }
       }
