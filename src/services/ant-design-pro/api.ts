@@ -90,6 +90,18 @@ export async function listInterfaceInfoByPage(body: API.InterfaceInfoPageParams,
   });
 }
 
+/** 获取分页接口信息VO POST /api/interfaceInfo/list/page/vo */
+export async function listInterfaceInfoVOByPage(body: API.InterfaceInfoPageParams, options?: { [key: string]: any }) {
+  return request<API.Result<API.InterfaceInfoVOPageResult>>('/api/interfaceInfo/list/page/vo', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 添加一个接口 POST /api/interfaceInfo/add */
 export async function addInterfaceInfo(body: API.InterfaceInfoAddParams, options?: { [key: string]: any }) {
   return request<API.Result<number>>('/api/interfaceInfo/add', {

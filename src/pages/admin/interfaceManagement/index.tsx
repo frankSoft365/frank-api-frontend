@@ -68,13 +68,15 @@ const List: React.FC = () => {
   const handleEditOk = async () => {
     try {
       const values = await editForm.validateFields();
-      await updateInterfaceInfo({ ...values, id: editingId });
+      const res = await updateInterfaceInfo({ ...values, id: editingId });
       setShowEditModal(false);
       setEditingId(null);
       setEditData(null);
       editForm.resetFields();
       fetchData(pagination.current, pagination.pageSize, filters);
-      message.success('更新成功');
+      if (res.code === 0) {
+        message.success('更新成功');
+      }
     } catch (e) {
       message.error('更新失败');
     }
@@ -378,7 +380,7 @@ const List: React.FC = () => {
             addForm.resetFields();
             fetchData(pagination.current, pagination.pageSize, filters);
             if (res.data > 0) {
-              message.success('新增接口！');
+              message.success('新增接口成功！');
             }
           }}
         >

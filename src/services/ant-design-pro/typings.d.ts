@@ -87,6 +87,14 @@ declare namespace API {
     pages?: number;
   }
 
+  type InterfaceInfoVOPageResult = {
+    records?: InterfaceInfoVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    pages?: number;
+  }
+
   type InterfaceInfo = {
     id?: string;
     createTime?: Date;
@@ -100,6 +108,19 @@ declare namespace API {
     status?: number;
     method?: string;
     userId?: string;
+  }
+
+  type InterfaceInfoVO = {
+    id?: string;
+    description?: string;
+    name?: string;
+    url?: string;
+    requestHeader?: string;
+    responseHeader?: string;
+    status?: number;
+    method?: string;
+    userId?: string;
+    username?: string;
   }
   // 接口管理 --------------------------------- end -----------------------
 

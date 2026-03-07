@@ -28,6 +28,12 @@ export default [
       },
     ],
   },
+  {
+    name: '接口中心',
+    icon: 'api',
+    path: '/interfaceInfo',
+    component: './interfaceInfo',
+  },
   { name: '个人中心', icon: 'user', path: '/profile', component: './profile' },
   { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },
