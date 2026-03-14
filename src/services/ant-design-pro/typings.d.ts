@@ -72,7 +72,6 @@ declare namespace API {
     method?: string;
     requestHeader?: string;
     responseHeader?: string;
-    status?: number;
   }
 
   type InterfaceInfoDeleteParams = {
@@ -121,6 +120,12 @@ declare namespace API {
     method?: string;
     userId?: string;
     username?: string;
+  }
+
+  type OnlineCallRequest = {
+    // 接口的id
+    id?: string;
+    param?: object;
   }
   // 接口管理 --------------------------------- end -----------------------
 

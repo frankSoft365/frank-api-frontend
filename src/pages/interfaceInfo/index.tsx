@@ -5,20 +5,16 @@ import {
   ProFormText,
   QueryFilter,
 } from '@ant-design/pro-components';
-import {
-  Button,
-  Form,
-  Input,
-  Modal,
-  message,
-  Select,
-  Space,
-  Table,
-} from 'antd';
+import { Form, Modal, message, Space, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { listInterfaceInfoVOByPage } from '@/services/ant-design-pro/api';
+import {
+  getInterfaceInfoById,
+  listInterfaceInfoVOByPage,
+  onlineCallInterface,
+} from '@/services/ant-design-pro/api';
+import DynamicFormByInterfaceInfo from './DynamicFormByInterfaceInfo';
 
-const List: React.FC = () => {
+const InterfaceInfo: React.FC = () => {
   const [rows, setRows] = useState<API.InterfaceInfo[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -26,20 +22,24 @@ const List: React.FC = () => {
     total: 0,
   });
   const [filters, setFilters] = useState<any>({});
-  const [editForm] = Form.useForm();
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editData, setEditData] = useState<API.InterfaceInfo | null>(null);
+  const [onlineCallForm] = Form.useForm();
+  const [onlineCallApiId, setOnlineCallApiId] = useState<string | null>(null);
+  const [showOnlineCallModal, setShowOnlineCallModal] = useState(false);
+  const [interfaceInfo, setInterfaceInfo] = useState<API.InterfaceInfo | null>(
+    null,
+  );
+  const [response, setResponse] = useState<any>(null);
 
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize, filters);
   }, [pagination.current, pagination.pageSize, filters]);
 
-  useEffect(() => {
-    if (editData && showEditModal) {
-      console.log('editData 状态更新为:', editData);
-      editForm.setFieldsValue(editData);
-    }
-  }, [editData, showEditModal]);
+  // 用于确认查询回显信息
+  // useEffect(() => {
+  //   if (interfaceInfo && showOnlineCallModal) {
+  //     console.log('interfaceinfo 状态更新为:', interfaceInfo);
+  //   }
+  // }, [interfaceInfo, showOnlineCallModal]);
 
   const columns = [
     {
@@ -96,15 +96,62 @@ const List: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      render: (_text: any, record: any, index: number) => (
+      render: (_text: any, record: any, _index: number) => (
         <Space size="middle">
-          <span onClick={() => {}} style={{ color: 'blue', cursor: 'pointer' }}>
+          <span
+            onClick={() => {
+              handleClickOnlineCall(record.id);
+            }}
+            style={{ color: 'blue', cursor: 'pointer' }}
+          >
             在线调用
           </span>
         </Space>
       ),
     },
   ];
+
+  // 在线调用面板 ------start------
+  const handleClickOnlineCall = async (id: string) => {
+    setOnlineCallApiId(id);
+    const res = await getInterfaceInfoById({ id });
+    if (res?.data) {
+      const interfaceInfoById = res.data;
+      if (interfaceInfoById?.status === 0) {
+        message.error('接口已关闭！');
+        return;
+      }
+      setInterfaceInfo(interfaceInfoById);
+      setShowOnlineCallModal(true);
+    } else {
+      message.error('获取接口信息失败!');
+    }
+  };
+
+  const handleOnlineCallCancel = () => {
+    setShowOnlineCallModal(false);
+    setOnlineCallApiId(null);
+    setInterfaceInfo(null);
+    setResponse(null);
+  };
+
+  const handleOnlineCallOk = async () => {
+    try {
+      const values = await onlineCallForm.validateFields();
+      const onlineCallRequest = {
+        id: onlineCallApiId,
+        param: values,
+      } as API.OnlineCallRequest;
+      const res = await onlineCallInterface(onlineCallRequest);
+      if (res.code === 0) {
+        message.success('请求成功');
+        setResponse(res.data);
+      }
+    } catch (_e) {
+      message.error('请求失败！');
+    }
+  };
+  // 在线调用面板 ------end------
 
   const fetchData = async (
     current: number,
@@ -201,7 +248,22 @@ const List: React.FC = () => {
         }}
         onChange={handleTableChange}
       />
+      <Modal
+        title="在线调用"
+        okText="发送请求"
+        open={showOnlineCallModal}
+        onCancel={handleOnlineCallCancel}
+        onOk={handleOnlineCallOk}
+      >
+        {interfaceInfo && (
+          <DynamicFormByInterfaceInfo
+            form={onlineCallForm}
+            interfaceInfo={interfaceInfo}
+            response={response}
+          />
+        )}
+      </Modal>
     </PageContainer>
   );
 };
-export default List;
+export default InterfaceInfo;

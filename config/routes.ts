@@ -34,6 +34,12 @@ export default [
     path: '/interfaceInfo',
     component: './interfaceInfo',
   },
+  {
+    name: '接口文档',
+    icon: 'read',
+    path: '/interfaceDoc',
+    component: './interfaceDoc',
+  },
   { name: '个人中心', icon: 'user', path: '/profile', component: './profile' },
   { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },

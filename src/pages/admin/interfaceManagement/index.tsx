@@ -49,7 +49,7 @@ const List: React.FC = () => {
   const handleEditClick = async (id: string) => {
     setEditingId(id);
     const res = await getInterfaceInfoById({ id });
-    if (res && res.data) {
+    if (res?.data) {
       setEditData(res.data);
       setShowEditModal(true);
     } else {
@@ -69,15 +69,15 @@ const List: React.FC = () => {
     try {
       const values = await editForm.validateFields();
       const res = await updateInterfaceInfo({ ...values, id: editingId });
-      setShowEditModal(false);
-      setEditingId(null);
-      setEditData(null);
-      editForm.resetFields();
-      fetchData(pagination.current, pagination.pageSize, filters);
       if (res.code === 0) {
         message.success('更新成功');
+        setShowEditModal(false);
+        setEditingId(null);
+        setEditData(null);
+        editForm.resetFields();
+        fetchData(pagination.current, pagination.pageSize, filters);
       }
-    } catch (e) {
+    } catch (_e) {
       message.error('更新失败');
     }
   };
@@ -144,7 +144,7 @@ const List: React.FC = () => {
       title: '修改时间',
       dataIndex: 'updateTime',
       key: 'updateTime',
-      render: (_text: any, _record: any, index: number) =>
+      render: (_text: any, _record: any, _index: number) =>
         dayjs(_record.updateTime).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
@@ -171,7 +171,7 @@ const List: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      render: (_text: any, record: any, index: number) => (
+      render: (_text: any, record: any, _index: number) => (
         <Space size="middle">
           <span
             onClick={() => handleEditClick(record.id)}
@@ -337,7 +337,7 @@ const List: React.FC = () => {
               placeholder="请选择请求方式"
             />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             name="status"
             label="接口状态"
             rules={[{ required: true, message: '请选择接口状态' }]}
@@ -349,7 +349,7 @@ const List: React.FC = () => {
               ]}
               placeholder="请选择接口状态"
             />
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       </Modal>
       {/* Delete Modal */}

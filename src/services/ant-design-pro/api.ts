@@ -147,6 +147,18 @@ export async function deleteInterfaceInfo(body: API.InterfaceInfoDeleteParams, o
   });
 }
 
+/** 在线调用 POST /api/onlineCall */
+export async function onlineCallInterface(body: API.OnlineCallRequest, options?: { [key: string]: any }) {
+  return request<API.Result<void>>('/api/onlineCall', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/notices', {

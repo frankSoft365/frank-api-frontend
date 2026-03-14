@@ -14,5 +14,9 @@ declare module 'omit.js';
 declare module 'numeral';
 declare module 'mockjs';
 declare module 'react-fittext';
+declare module '*.md' {
+  const content: string;
+  export default content;
+}
 
 declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
