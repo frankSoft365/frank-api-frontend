@@ -14,6 +14,7 @@ import {
   Select,
   Space,
   Table,
+  type TableColumnType,
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
@@ -22,6 +23,8 @@ import {
   deleteInterfaceInfo,
   getInterfaceInfoById,
   listInterfaceInfoByPage,
+  offlineInterface,
+  releaseInterface,
   updateInterfaceInfo,
 } from '@/services/ant-design-pro/api';
 
@@ -109,16 +112,37 @@ const List: React.FC = () => {
     setDeletingId(null);
   };
 
-  const columns = [
+  // 管理接口的发布与下线
+  const handleInterfaceRelease = async (id: string) => {
+    const interfaceId = { id } as API.InterfaceReleaseOrOfflineRequest;
+    const res = await releaseInterface(interfaceId);
+    if (res.code === 0) {
+      message.success('发布成功');
+      fetchData(pagination.current, pagination.pageSize, filters);
+    }
+  };
+
+  const handleInterfaceOffline = async (id: string) => {
+    const interfaceId = { id } as API.InterfaceReleaseOrOfflineRequest;
+    const res = await offlineInterface(interfaceId);
+    if (res.code === 0) {
+      message.success('下线成功');
+      fetchData(pagination.current, pagination.pageSize, filters);
+    }
+  };
+
+  const columns: TableColumnType<API.InterfaceInfo>[] = [
     {
       title: '接口名称',
       dataIndex: 'name',
       key: 'name',
+      fixed: true,
     },
     {
       title: '请求路径',
       dataIndex: 'url',
       key: 'url',
+      ellipsis: true,
     },
     {
       title: '接口描述',
@@ -134,11 +158,13 @@ const List: React.FC = () => {
       title: '请求头',
       dataIndex: 'requestHeader',
       key: 'requestHeader',
+      ellipsis: true,
     },
     {
       title: '响应头',
       dataIndex: 'responseHeader',
       key: 'responseHeader',
+      ellipsis: true,
     },
     {
       title: '修改时间',
@@ -156,6 +182,7 @@ const List: React.FC = () => {
       title: '接口状态',
       dataIndex: 'status',
       key: 'status',
+      fixed: 'right',
       render: (text: any) => {
         if (text === 1) {
           return (
@@ -171,8 +198,26 @@ const List: React.FC = () => {
     {
       title: '操作',
       key: 'action',
+      fixed: 'right',
       render: (_text: any, record: any, _index: number) => (
-        <Space size="middle">
+        <Space size={'middle'}>
+          <span
+            onClick={() => {
+              if (record.status === 0) {
+                handleInterfaceRelease(record.id);
+              } else {
+                handleInterfaceOffline(record.id);
+              }
+            }}
+            style={{
+              color: 'black',
+              cursor: 'pointer',
+              border: '2px solid green',
+              padding: '2px 6px',
+            }}
+          >
+            {record.status === 0 ? '发布' : '下线'}
+          </span>
           <span
             onClick={() => handleEditClick(record.id)}
             style={{ color: 'blue', cursor: 'pointer' }}
@@ -280,6 +325,7 @@ const List: React.FC = () => {
       <Table
         dataSource={rows}
         columns={columns}
+        scroll={{ x: 'max-content' }}
         pagination={{
           current: pagination.current,
           pageSize: pagination.pageSize,

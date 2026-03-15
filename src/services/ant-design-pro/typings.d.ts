@@ -127,6 +127,11 @@ declare namespace API {
     id?: string;
     param?: object;
   }
+
+  type InterfaceReleaseOrOfflineRequest = {
+    // 接口的id
+    id?: string;
+  }
   // 接口管理 --------------------------------- end -----------------------
 
   type PageParams = {

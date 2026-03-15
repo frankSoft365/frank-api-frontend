@@ -159,6 +159,30 @@ export async function onlineCallInterface(body: API.OnlineCallRequest, options?:
   });
 }
 
+/** 发布接口 POST /api/interfaceInfo/release */
+export async function releaseInterface(body: API.InterfaceReleaseOrOfflineRequest, options?: { [key: string]: any }) {
+  return request<API.Result<void>>('/api/interfaceInfo/release', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 下线接口 POST /api/interfaceInfo/offline */
+export async function offlineInterface(body: API.InterfaceReleaseOrOfflineRequest, options?: { [key: string]: any }) {
+  return request<API.Result<void>>('/api/interfaceInfo/offline', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/notices', {
