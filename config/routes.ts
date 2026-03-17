@@ -14,15 +14,19 @@ export default [
     icon: 'crown',
     access: 'canAdmin',
     routes: [
-      { path: '/admin', redirect: '/admin/sub-page' },
-      { path: '/admin/sub-page', name: '用户管理', component: './admin/list' },
+      { path: '/admin', redirect: '/admin/userManagement' },
       {
-        path: '/admin/sub-page1',
+        path: '/admin/userManagement',
+        name: '用户管理',
+        component: './admin/list',
+      },
+      {
+        path: '/admin/userBatchImport',
         name: '批量导入用户',
         component: './admin/batchImportUser',
       },
       {
-        path: '/admin/sub-page2',
+        path: '/admin/interfaceManagement',
         name: '接口管理',
         component: './admin/interfaceManagement',
       },
@@ -31,7 +35,7 @@ export default [
   {
     name: '接口中心',
     icon: 'api',
-    path: '/interfaceInfo',
+    path: '/interfaceInfoCenter',
     component: './interfaceInfo',
   },
   {

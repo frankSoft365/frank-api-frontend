@@ -48,11 +48,6 @@ const InterfaceInfo: React.FC = () => {
       key: 'name',
     },
     {
-      title: '请求路径',
-      dataIndex: 'url',
-      key: 'url',
-    },
-    {
       title: '接口描述',
       dataIndex: 'description',
       key: 'description',
@@ -61,16 +56,6 @@ const InterfaceInfo: React.FC = () => {
       title: '请求方法',
       dataIndex: 'method',
       key: 'method',
-    },
-    {
-      title: '请求头',
-      dataIndex: 'requestHeader',
-      key: 'requestHeader',
-    },
-    {
-      title: '响应头',
-      dataIndex: 'responseHeader',
-      key: 'responseHeader',
     },
     {
       title: '创建人',
@@ -194,7 +179,6 @@ const InterfaceInfo: React.FC = () => {
           label="接口名称"
           placeholder="请输入接口名称"
         />
-        <ProFormText name="url" label="请求路径" placeholder="请输入请求路径" />
         <ProFormText
           name="description"
           label="接口描述"
@@ -245,6 +229,7 @@ const InterfaceInfo: React.FC = () => {
           pageSize: pagination.pageSize,
           total: pagination.total,
           showSizeChanger: true,
+          pageSizeOptions: [10, 20],
         }}
         onChange={handleTableChange}
       />

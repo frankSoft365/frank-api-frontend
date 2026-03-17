@@ -331,6 +331,7 @@ const List: React.FC = () => {
           pageSize: pagination.pageSize,
           total: pagination.total,
           showSizeChanger: true,
+          pageSizeOptions: [10, 20],
         }}
         onChange={handleTableChange}
       />
@@ -383,19 +384,6 @@ const List: React.FC = () => {
               placeholder="请选择请求方式"
             />
           </Form.Item>
-          {/* <Form.Item
-            name="status"
-            label="接口状态"
-            rules={[{ required: true, message: '请选择接口状态' }]}
-          >
-            <Select
-              options={[
-                { label: '关闭', value: 0 },
-                { label: '打开', value: 1 },
-              ]}
-              placeholder="请选择接口状态"
-            />
-          </Form.Item> */}
         </Form>
       </Modal>
       {/* Delete Modal */}

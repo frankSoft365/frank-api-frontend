@@ -23,9 +23,9 @@ const Footer: React.FC = () => {
           blankTarget: true,
         },
         {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
+          key: 'frankSoft',
+          title: 'frankSoft',
+          href: 'https://github.com/frankSoft365',
           blankTarget: true,
         },
       ]}
