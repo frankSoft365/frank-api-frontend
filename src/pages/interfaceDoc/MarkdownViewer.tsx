@@ -54,7 +54,7 @@ const MarkdownViewer = ({ path }: { path: string }) => {
               },
               // Ensure H1/H2 tags have IDs that match your Anchor hrefs
               h2: ({ children }) => {
-                const id = String(children).toLowerCase().replace(/\s+/g, '-');
+                const id = String(children).replace(/\s+/g, '-');
                 return <h2 id={id}>{children}</h2>;
               },
               table: ({ ...props }) => (

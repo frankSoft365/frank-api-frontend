@@ -36,7 +36,14 @@ export default [
     name: '接口中心',
     icon: 'api',
     path: '/interfaceInfoCenter',
+    component: './interfaceInfoCenter',
+  },
+  {
+    name: '接口信息',
+    icon: 'api',
+    path: '/interfaceInfo/:id',
     component: './interfaceInfo',
+    hideInMenu: true,
   },
   {
     name: '接口文档',
@@ -44,7 +51,24 @@ export default [
     path: '/interfaceDoc',
     component: './interfaceDoc',
   },
-  { name: '个人中心', icon: 'user', path: '/profile', component: './profile' },
+  {
+    name: '个人中心',
+    icon: 'user',
+    path: '/userCenter',
+    routes: [
+      { path: '/userCenter', redirect: '/userCenter/profile' },
+      {
+        path: '/userCenter/profile',
+        name: '个人信息',
+        component: './userCenter/profile',
+      },
+      {
+        path: '/userCenter/console',
+        name: '控制台',
+        component: './userCenter/console',
+      },
+    ],
+  },
   { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },
 ];

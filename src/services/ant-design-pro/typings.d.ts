@@ -59,6 +59,7 @@ declare namespace API {
     method?: string;
     requestHeader?: string;
     responseHeader?: string;
+    requestParam?: string;
   }
 
   type InterfaceInfoUpdateParams = {
@@ -69,6 +70,7 @@ declare namespace API {
     method?: string;
     requestHeader?: string;
     responseHeader?: string;
+    requestParam?: string;
   }
 
   type InterfaceInfoDeleteParams = {
@@ -101,6 +103,7 @@ declare namespace API {
     url?: string;
     requestHeader?: string;
     responseHeader?: string;
+    requestParam?: string;
     status?: number;
     method?: string;
     userId?: string;
@@ -113,6 +116,7 @@ declare namespace API {
     url?: string;
     requestHeader?: string;
     responseHeader?: string;
+    requestParam?: string;
     status?: number;
     method?: string;
     userId?: string;
@@ -128,6 +132,16 @@ declare namespace API {
   type InterfaceReleaseOrOfflineRequest = {
     // 接口的id
     id?: string;
+  }
+
+  type ViewAkSkVO = {
+    accessKey?: string;
+    secretKey?: string;
+  }
+
+  type CheckViewChanceVO = {
+    hasChance?: boolean;
+    message?: string;
   }
   // 接口管理 --------------------------------- end -----------------------
 

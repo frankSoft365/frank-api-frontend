@@ -182,3 +182,22 @@ export async function offlineInterface(body: API.InterfaceReleaseOrOfflineReques
     ...(options || {}),
   });
 }
+
+/** 查看用户 AK/SK（仅一次机会） GET /api/userPaymentAkSk/viewAkSk */
+export async function viewAkSk(options?: { [key: string]: any }) {
+  return request<API.Result<API.ViewAkSkVO>>('/api/userPaymentAkSk/viewAkSk', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/** 检查用户是否还有查看 AK/SK 的机会 GET /api/userPaymentAkSk/checkViewChance */
+export async function checkViewChance(options?: { [key: string]: any }) {
+  return request<API.Result<API.CheckViewChanceVO>>(
+    '/api/userPaymentAkSk/checkViewChance',
+    {
+      method: 'GET',
+      ...(options || {}),
+    },
+  );
+}

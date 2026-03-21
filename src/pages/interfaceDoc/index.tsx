@@ -39,8 +39,8 @@ const InterfaceDoc: React.FC = () => {
               },
               {
                 key: '接口SDK',
-                href: '#sdk',
-                title: '接口SDK',
+                href: '#SDK',
+                title: 'SDK',
               },
               {
                 key: '返回结果',

@@ -1,4 +1,4 @@
-import { Card, Form, Input, InputNumber, Select } from 'antd';
+import { Card, Form, Input, InputNumber, Select, Tag } from 'antd';
 import type { FormInstance } from 'antd/lib';
 import ReactJson from 'react-json-view';
 
@@ -12,10 +12,20 @@ const DynamicFormByInterfaceInfo = ({
   interfaceInfo: API.InterfaceInfo;
   response: any;
 }) => {
+  const statusTag = (status?: number) => {
+    if (status === 0) {
+      return <Tag color="red">关闭</Tag>;
+    }
+    if (status === 1) {
+      return <Tag color="green">开启</Tag>;
+    }
+    return <Tag>未知</Tag>;
+  };
+
   // 1. 解析 requestHeader 为 JSON Schema
   let requestSchema = null;
-  if (interfaceInfo.requestHeader) {
-    requestSchema = JSON.parse(interfaceInfo.requestHeader);
+  if (interfaceInfo.requestParam) {
+    requestSchema = JSON.parse(interfaceInfo.requestParam);
   }
 
   // 3. 渲染动态表单项
@@ -66,13 +76,33 @@ const DynamicFormByInterfaceInfo = ({
   return (
     <>
       <Card title="接口信息" style={{ width: '100%' }}>
+        <p>接口ID：{interfaceInfo.id}</p>
         <p>接口名称：{interfaceInfo.name}</p>
+        <p>接口状态：{statusTag(interfaceInfo.status)}</p>
         <p>请求方法：{interfaceInfo.method}</p>
-        <p>接口描述：{interfaceInfo.description}</p>
+        <p>请求头：{interfaceInfo.requestHeader || '无'}</p>
+        <p>响应头：{interfaceInfo.responseHeader || '无'}</p>
+        <p>接口描述：{interfaceInfo.description || '无'}</p>
         <p>请求路径：{interfaceInfo.url}</p>
       </Card>
       <Card title="参数信息" style={{ width: '100%' }}>
-        <Form form={form} layout="vertical" title="接口参数">
+        {requestSchema && (
+          <ReactJson
+            src={requestSchema}
+            name={null}
+            theme="rjv-default"
+            iconStyle="triangle"
+            indentWidth={2}
+            collapsed={false}
+            displayDataTypes={false}
+          />
+        )}
+        <Form
+          form={form}
+          layout="vertical"
+          title="接口参数"
+          style={{ width: '40%' }}
+        >
           {renderFormItems()}
         </Form>
       </Card>

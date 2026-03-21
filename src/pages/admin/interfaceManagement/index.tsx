@@ -1,8 +1,10 @@
 import { PageContainer } from '@ant-design/pro-components';
 import '@umijs/max';
 import {
+  type ProColumns,
   ProFormSelect,
   ProFormText,
+  ProTable,
   QueryFilter,
 } from '@ant-design/pro-components';
 import {
@@ -11,10 +13,10 @@ import {
   Input,
   Modal,
   message,
+  Popconfirm,
   Select,
   Space,
-  Table,
-  type TableColumnType,
+  Tag,
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
@@ -42,8 +44,6 @@ const List: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<API.InterfaceInfo | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize, filters);
@@ -92,26 +92,6 @@ const List: React.FC = () => {
     editForm.resetFields();
   };
 
-  const handleDeleteClick = (id: string) => {
-    setDeletingId(id);
-    setShowDeleteModal(true);
-  };
-
-  const handleDeleteOk = async () => {
-    if (deletingId != null) {
-      await deleteInterfaceInfo({ id: deletingId });
-      setShowDeleteModal(false);
-      setDeletingId(null);
-      fetchData(pagination.current, pagination.pageSize, filters);
-      message.success('删除成功');
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setShowDeleteModal(false);
-    setDeletingId(null);
-  };
-
   // 管理接口的发布与下线
   const handleInterfaceRelease = async (id: string) => {
     const interfaceId = { id } as API.InterfaceReleaseOrOfflineRequest;
@@ -131,12 +111,12 @@ const List: React.FC = () => {
     }
   };
 
-  const columns: TableColumnType<API.InterfaceInfo>[] = [
+  const columns: ProColumns<API.InterfaceInfo>[] = [
     {
       title: '接口名称',
       dataIndex: 'name',
       key: 'name',
-      fixed: true,
+      fixed: 'left',
     },
     {
       title: '请求路径',
@@ -153,18 +133,41 @@ const List: React.FC = () => {
       title: '请求方法',
       dataIndex: 'method',
       key: 'method',
+      render: (text: any) => {
+        const method = String(text ?? '-').toUpperCase();
+        const colorMap: Record<string, string> = {
+          GET: 'green',
+          POST: 'blue',
+          PUT: 'orange',
+          DELETE: 'red',
+          PATCH: 'purple',
+        };
+        return <Tag color={colorMap[method]}>{method}</Tag>;
+      },
+    },
+    {
+      title: '请求参数',
+      dataIndex: 'requestParam',
+      key: 'requestParam',
+      valueType: 'jsonCode',
+      ellipsis: false,
+      width: 320,
+      render: (dom) => <div style={{ overflowX: 'auto' }}>{dom}</div>,
+      onCell: () => ({
+        style: {
+          wordBreak: 'normal',
+        },
+      }),
     },
     {
       title: '请求头',
       dataIndex: 'requestHeader',
       key: 'requestHeader',
-      ellipsis: true,
     },
     {
       title: '响应头',
       dataIndex: 'responseHeader',
       key: 'responseHeader',
-      ellipsis: true,
     },
     {
       title: '修改时间',
@@ -185,13 +188,11 @@ const List: React.FC = () => {
       fixed: 'right',
       render: (text: any) => {
         if (text === 1) {
-          return (
-            <span style={{ color: 'green', fontWeight: 500 }}>已开启</span>
-          );
+          return <Tag color="green">已开启</Tag>;
         } else if (text === 0) {
-          return <span style={{ color: 'red', fontWeight: 500 }}>已关闭</span>;
+          return <Tag color="red">已关闭</Tag>;
         } else {
-          return <span>-</span>;
+          return <Tag>未知</Tag>;
         }
       },
     },
@@ -201,7 +202,8 @@ const List: React.FC = () => {
       fixed: 'right',
       render: (_text: any, record: any, _index: number) => (
         <Space size={'middle'}>
-          <span
+          <Button
+            type="link"
             onClick={() => {
               if (record.status === 0) {
                 handleInterfaceRelease(record.id);
@@ -210,26 +212,38 @@ const List: React.FC = () => {
               }
             }}
             style={{
-              color: 'black',
-              cursor: 'pointer',
-              border: '2px solid green',
-              padding: '2px 6px',
+              padding: 0,
+              color: record.status === 0 ? '#1677ff' : '#ff4d4f',
             }}
           >
             {record.status === 0 ? '发布' : '下线'}
-          </span>
-          <span
+          </Button>
+          <Button
+            type="link"
             onClick={() => handleEditClick(record.id)}
-            style={{ color: 'blue', cursor: 'pointer' }}
+            style={{ padding: 0 }}
           >
             修改
-          </span>
-          <span
-            onClick={() => handleDeleteClick(record.id)}
-            style={{ color: 'red', cursor: 'pointer' }}
+          </Button>
+          <Popconfirm
+            title="确认删除该接口？"
+            okText="删除"
+            okButtonProps={{ danger: true }}
+            cancelText="取消"
+            onConfirm={async () => {
+              const res = await deleteInterfaceInfo({ id: record.id });
+              if (res.code === 0) {
+                message.success('删除成功');
+                fetchData(pagination.current, pagination.pageSize, filters);
+              } else {
+                message.error('删除失败');
+              }
+            }}
           >
-            删除
-          </span>
+            <Button type="link" danger style={{ padding: 0 }}>
+              删除
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -317,12 +331,14 @@ const List: React.FC = () => {
           gap: 12,
         }}
       >
-        <span>共 {pagination.total} 条数据</span>
         <Button type="primary" onClick={() => setShowAddModal(true)}>
           新增接口
         </Button>
       </div>
-      <Table
+      <ProTable
+        rowKey="id"
+        search={false}
+        options={false}
         dataSource={rows}
         columns={columns}
         scroll={{ x: 'max-content' }}
@@ -357,6 +373,9 @@ const List: React.FC = () => {
           >
             <Input placeholder="请输入请求路径" />
           </Form.Item>
+          <Form.Item name="requestParam" label="请求参数">
+            <Input placeholder="请输入请求参数 (可选)" />
+          </Form.Item>
           <Form.Item name="requestHeader" label="请求头">
             <Input placeholder="请输入请求头 (可选)" />
           </Form.Item>
@@ -385,17 +404,6 @@ const List: React.FC = () => {
             />
           </Form.Item>
         </Form>
-      </Modal>
-      {/* Delete Modal */}
-      <Modal
-        title="确认删除"
-        open={showDeleteModal}
-        onOk={handleDeleteOk}
-        onCancel={handleDeleteCancel}
-        okText="确定"
-        cancelText="取消"
-      >
-        <p>确定要删除该接口吗？</p>
       </Modal>
       <Modal
         title="新增接口"
@@ -431,6 +439,9 @@ const List: React.FC = () => {
             rules={[{ required: true, message: '请输入请求路径' }]}
           >
             <Input placeholder="请输入请求路径" />
+          </Form.Item>
+          <Form.Item name="requestParam" label="请求参数">
+            <Input placeholder="请输入请求参数 (可选)" />
           </Form.Item>
           <Form.Item name="requestHeader" label="请求头">
             <Input placeholder="请输入请求头 (可选)" />
