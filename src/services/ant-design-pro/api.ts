@@ -80,7 +80,7 @@ export async function uploadAvatar(body: FormData, options?: { [key: string]: an
 
 /** 获取分页接口信息 POST /api/interfaceInfo/list/page */
 export async function listInterfaceInfoByPage(body: API.InterfaceInfoPageParams, options?: { [key: string]: any }) {
-  return request<API.Result<API.InterfaceInfoPageResult>>('/api/interfaceInfo/list/page', {
+  return request<API.Result<API.PageResult<API.InterfaceInfo>>>('/api/interfaceInfo/list/page', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -200,4 +200,40 @@ export async function checkViewChance(options?: { [key: string]: any }) {
       ...(options || {}),
     },
   );
+}
+
+/** 获取接口监控概览 POST /api/interfaceMonitoring/overview/admin */
+export async function getInterfaceMonitoringOverview(body: API.InterfaceMonitoringOverviewParams, options?: { [key: string]: any }) {
+  return request<API.Result<API.InterfaceMonitoringOverviewData>>('/api/interfaceMonitoring/overview/admin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 获取接口监控概览 POST /api/interfaceMonitoring/interfaceStat/admin */
+export async function getInterfaceMonitoringInterfaceStat(body: API.InterfaceStatQueryDTO, options?: { [key: string]: any }) {
+  return request<API.Result<API.PageResult<API.InterfaceStatVO>>>('/api/interfaceMonitoring/interfaceStat/admin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 获取用户调用次数排名 POST /api/interfaceMonitoring/userCallRank/admin */
+export async function getInterfaceMonitoringUserCallRank(body: API.UserCallRankQueryDTO, options?: { [key: string]: any }) {
+  return request<API.Result<API.PageResult<API.UserCallRankVO>>>('/api/interfaceMonitoring/userCallRank/admin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
 }

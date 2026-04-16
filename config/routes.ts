@@ -14,7 +14,12 @@ export default [
     icon: 'crown',
     access: 'canAdmin',
     routes: [
-      { path: '/admin', redirect: '/admin/userManagement' },
+      { path: '/admin', redirect: '/admin/console' },
+      {
+        path: '/admin/console',
+        name: '控制台',
+        component: './admin/console',
+      },
       {
         path: '/admin/userManagement',
         name: '用户管理',
