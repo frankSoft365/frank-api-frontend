@@ -96,12 +96,17 @@ export default function Console() {
   };
 
   return (
-    <PageContainer title="控制台">
+    <PageContainer title="AccessKey">
+      <Alert
+        message="AccessKey ID 和 AccessKey Secret 是访问云服务 API 的密钥，用于身份验证和授权。"
+        type="info"
+        showIcon
+      />
       <Flex vertical gap={16}>
         <Card
           title={
             <Space size={8}>
-              <span>AK/SK 管理</span>
+              <span>AccessKey/SecretKey 管理</span>
               {checking ? (
                 <Tag>加载中</Tag>
               ) : viewed ? (

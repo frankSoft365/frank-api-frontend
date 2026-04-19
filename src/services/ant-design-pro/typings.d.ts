@@ -244,4 +244,47 @@ declare namespace API {
     // 查询用户ID
     userId?: string;
   };
+
+
+  type UserInterfaceLogQueryDTO = {
+    // 当前页号
+    current?: number;
+    // 每页大小
+    pageSize?: number;
+    // 开始时间
+    startTime?: string;
+    // 结束时间
+    endTime?: string;
+    // 查询时间
+    queryTime?: string;
+    // 查询路径 模糊查询
+    interfacePath?: string;
+    // 请求方法 POST&GET...
+    requestMethod?: string;
+    // 请求结果 0成功&1失败&null全选
+    requestResult?: number;
+  };
+
+  type UserInterfaceLogVO = {
+    requestId?: string;
+    requestTime?: Date;
+    interfacePath?: string;
+    requestMethod?: string;
+    success?: number; // 1 成功 0 失败
+    costTime?: number;
+    errorMessage?: string;
+  };
+
+  type UserCallDistributionVO = {
+    totalSuccessCount?: number;
+    callDistribution?: InterfacePathCountVO[];
+  };
+
+  type InterfacePathCountVO = {
+    interfacePath?: string;
+    successCount?: number;
+  }
 }
+
+
+

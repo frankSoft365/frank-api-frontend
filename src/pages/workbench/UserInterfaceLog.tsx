@@ -4,15 +4,13 @@ import {
   QueryFilter,
 } from '@ant-design/pro-components';
 import type { GetProp, TableProps } from 'antd';
-import { Alert, Card, message, Table, Tag } from 'antd';
-import type { SorterResult } from 'antd/es/table/interface';
+import { Alert, Card, message, Popconfirm, Table, Tag } from 'antd';
 import dayjs, { type Dayjs } from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { getInterfaceMonitoringInterfaceStat } from '@/services/ant-design-pro/api';
-import { useDateRangePicker } from './DateRangePicker';
+import { useDateRangePicker } from '@/pages/admin/console/DateRangePicker';
+import { getUserInterfaceLogVO } from '@/services/ant-design-pro/api';
 
 type ColumnsType<T extends object = object> = TableProps<T>['columns'];
-
 type TablePaginationConfig = Exclude<
   GetProp<TableProps, 'pagination'>,
   boolean
@@ -20,20 +18,15 @@ type TablePaginationConfig = Exclude<
 
 interface TableParams {
   pagination?: TablePaginationConfig;
-  sortField?: SorterResult<any>['field'];
-  sortOrder?: SorterResult<any>['order'];
   filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
 
-const ALLOWED_SORT_FIELDS = {
-  total: 'total',
-  successRate: 'successRate',
-  avgCost: 'avgCost',
-};
-const SORT_ORDER_ASC = 'ascend';
-const SORT_ORDER_DESC = 'descend';
-
-const columns: ColumnsType<API.InterfaceStatVO> = [
+const columns: ColumnsType<API.UserInterfaceLogVO> = [
+  {
+    title: '请求ID',
+    dataIndex: 'requestId',
+    width: '20%',
+  },
   {
     title: '接口地址',
     dataIndex: 'interfacePath',
@@ -56,48 +49,49 @@ const columns: ColumnsType<API.InterfaceStatVO> = [
     width: '10%',
   },
   {
-    title: '总调用次数',
-    dataIndex: 'total',
-    sorter: true,
-    width: '10%',
-  },
-  {
-    title: '成功次数',
+    title: '请求结果(点击查看详情)',
     dataIndex: 'success',
-    width: '10%',
+    render: (text: number, record: API.UserInterfaceLogVO) => {
+      const colorMap: Record<number, string> = {
+        1: 'green',
+        0: 'red',
+      };
+      return (
+        <Popconfirm
+          title="错误信息"
+          description={record.errorMessage ?? '无错误信息'}
+          okText="确认"
+          cancelText="关闭"
+        >
+          <Tag color={colorMap[text]} style={{ cursor: 'pointer' }}>
+            {text === 1 ? '成功' : '失败'}
+          </Tag>
+        </Popconfirm>
+      );
+    },
+    width: '20%',
   },
   {
-    title: '失败次数',
-    dataIndex: 'fail',
+    title: '耗时',
+    dataIndex: 'costTime',
     width: '10%',
+    render: (text: number) => `${text}ms`,
   },
   {
-    title: '成功率',
-    dataIndex: 'successRate',
-    sorter: true,
-    render: (text: number) => `${text}%`,
-    width: '10%',
-  },
-  {
-    title: '平均耗时',
-    dataIndex: 'avgCost',
-    sorter: true,
-    width: '10%',
-  },
-  {
-    title: '最大耗时',
-    dataIndex: 'maxCost',
+    title: '请求时间',
+    dataIndex: 'requestTime',
+    key: 'requestTime',
+    render: (text: string) => dayjs(text).format('YYYY-MM-DD HH:mm:ss'),
     width: '20%',
   },
 ];
 
-const InterfaceStat: React.FC = () => {
+const UserInterfaceLog: React.FC = () => {
   const { DateRangePicker, getDateRange } = useDateRangePicker((dates) => {
     setDateRange(dates);
   });
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs]>(getDateRange());
-
-  const [data, setData] = useState<API.InterfaceStatVO[]>();
+  const [data, setData] = useState<API.UserInterfaceLogVO[]>();
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -105,19 +99,15 @@ const InterfaceStat: React.FC = () => {
       pageSize: 10,
       pageSizeOptions: ['10', '20'],
     },
-    sortField: ALLOWED_SORT_FIELDS.total,
-    sortOrder: SORT_ORDER_DESC,
   });
 
   const getRequestBody = (
     tableParams: TableParams,
     dateRange: [Dayjs, Dayjs],
   ) => {
-    const requestBody: API.InterfaceStatQueryDTO = {};
+    const requestBody: API.UserInterfaceLogQueryDTO = {};
     requestBody.current = tableParams.pagination?.current || 1;
     requestBody.pageSize = tableParams.pagination?.pageSize || 10;
-    requestBody.sortField = tableParams.sortField as string;
-    requestBody.sortOrder = tableParams.sortOrder as string;
     requestBody.startTime = dateRange[0].format('YYYY-MM-DDTHH:mm:ss');
     requestBody.endTime = dateRange[1].format('YYYY-MM-DDTHH:mm:ss');
     requestBody.queryTime = dayjs().format('YYYY-MM-DDTHH:mm:ss');
@@ -125,7 +115,6 @@ const InterfaceStat: React.FC = () => {
     requestBody.interfacePath = tableParams.filters?.interfacePath as
       | string
       | undefined;
-    // 表格列筛选返回的是数组，取第一个元素
     requestBody.requestMethod = tableParams.filters?.requestMethod as
       | string
       | undefined;
@@ -139,25 +128,18 @@ const InterfaceStat: React.FC = () => {
   };
 
   const fetchData = async () => {
-    console.log('tableParams', tableParams);
     const requestBody = getRequestBody(tableParams, dateRange);
-    console.log('InterfaceStat 的 fetchData : 孩子们我被执行了', requestBody);
     setLoading(true);
-    const res = await getInterfaceMonitoringInterfaceStat(requestBody);
+    const res = await getUserInterfaceLogVO(requestBody);
     if (res.code === 0) {
       const data = res.data || {};
       const records = data.records || [];
       const total =
         data.total || (Array.isArray(data.records) ? data.records.length : 0);
-      // 将records中的总调用次数,成功次数,失败次数, 最大耗时由string转换为number
+      // 将costTime由string转换为number
       if (Array.isArray(records)) {
-        records.forEach((record: API.InterfaceStatVO) => {
-          record.total = Number(record.total);
-          record.success = Number(record.success);
-          record.fail = Number(record.fail);
-          record.successRate = Number(record.successRate);
-          record.avgCost = Number(record.avgCost);
-          record.maxCost = Number(record.maxCost);
+        records.forEach((record: API.UserInterfaceLogVO) => {
+          record.costTime = Number(record.costTime);
         });
       }
       setData(Array.isArray(records) ? records : []);
@@ -173,7 +155,7 @@ const InterfaceStat: React.FC = () => {
     } else {
       setData([]);
       setLoading(false);
-      message.error('获取接口监控概览失败');
+      message.error('获取接口调用日志失败');
     }
   };
 
@@ -182,23 +164,18 @@ const InterfaceStat: React.FC = () => {
   }, [
     tableParams.pagination?.current,
     tableParams.pagination?.pageSize,
-    tableParams?.sortOrder,
-    tableParams?.sortField,
     JSON.stringify(tableParams.filters),
     dateRange[0],
     dateRange[1],
   ]);
 
-  const handleTableChange: TableProps<API.InterfaceStatVO>['onChange'] = (
+  const handleTableChange: TableProps<API.UserInterfaceLogVO>['onChange'] = (
     pagination,
     filters,
-    sorter,
   ) => {
     setTableParams({
       pagination,
       filters,
-      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
-      sortField: Array.isArray(sorter) ? undefined : sorter.field,
     });
 
     // `dataSource` is useless since `pageSize` changed
@@ -230,7 +207,7 @@ const InterfaceStat: React.FC = () => {
   };
 
   return (
-    <Card title="接口监控统计">
+    <Card title="接口调用日志">
       <Alert
         message="日志记录仅作参考，保留30天"
         type="warning"
@@ -253,7 +230,6 @@ const InterfaceStat: React.FC = () => {
             { label: '成功', value: 1 },
             { label: '失败', value: 0 },
           ]}
-          allowClear
           width="xs"
         />
         <ProFormSelect
@@ -266,18 +242,15 @@ const InterfaceStat: React.FC = () => {
             { label: 'PUT', value: 'PUT' },
             { label: 'DELETE', value: 'DELETE' },
             { label: 'PATCH', value: 'PATCH' },
-            { label: 'HEAD', value: 'HEAD' },
-            { label: 'OPTIONS', value: 'OPTIONS' },
           ]}
-          allowClear
           width="xs"
         />
       </QueryFilter>
       <DateRangePicker />
       <div style={{ margin: '16px 0' }} />
-      <Table<API.InterfaceStatVO>
+      <Table<API.UserInterfaceLogVO>
         columns={columns}
-        rowKey={(record) => record.interfacePath || ''}
+        rowKey={(record) => record.requestId || ''}
         dataSource={data}
         pagination={tableParams.pagination}
         loading={loading}
@@ -287,4 +260,4 @@ const InterfaceStat: React.FC = () => {
   );
 };
 
-export default InterfaceStat;
+export default UserInterfaceLog;

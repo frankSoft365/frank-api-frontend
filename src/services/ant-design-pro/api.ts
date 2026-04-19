@@ -237,3 +237,35 @@ export async function getInterfaceMonitoringUserCallRank(body: API.UserCallRankQ
     ...(options || {}),
   });
 }
+
+/** 获取用户调用总览 POST /api/interfaceMonitoring/overview/user */
+export async function getUserMonitorOverviewVO(body: API.InterfaceMonitoringOverviewParams, options?: { [key: string]: any }) {
+  return request<API.Result<API.InterfaceMonitoringOverviewData>>('/api/interfaceMonitoring/overview/user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 获取用户调用日志 POST /api/interfaceMonitoring/interfaceLog/user */
+export async function getUserInterfaceLogVO(body: API.UserInterfaceLogQueryDTO, options?: { [key: string]: any }) {
+  return request<API.Result<API.PageResult<API.UserInterfaceLogVO>>>('/api/interfaceMonitoring/interfaceLog/user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 获取用户调用分布 GET /api/interfaceMonitoring/callDistribution/user */
+export async function getUserCallDistributionVO(options?: { [key: string]: any }) {
+  return request<API.Result<API.UserCallDistributionVO>>('/api/interfaceMonitoring/callDistribution/user', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
