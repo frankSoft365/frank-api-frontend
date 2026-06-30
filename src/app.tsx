@@ -143,6 +143,6 @@ export const layout: RunTimeLayoutConfig = ({
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  baseURL: isDev ? '/api' : 'http://8.160.164.98:8088',
+  baseURL: isDev ? '/api' : 'https://8.160.164.98:8088',
   ...errorConfig,
 };
