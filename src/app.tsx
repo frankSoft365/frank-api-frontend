@@ -145,6 +145,6 @@ export const layout: RunTimeLayoutConfig = ({
 export const request: RequestConfig = {
   baseURL: isDev
     ? '/api'
-    : process.env.REACT_APP_API_BASE_URL || 'https://8.160.164.98:8088',
+    : process.env.REACT_APP_API_BASE_URL || 'https://api.franksoft.top',
   ...errorConfig,
 };
