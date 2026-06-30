@@ -256,14 +256,7 @@ const Register: React.FC = () => {
                       email: emailValue,
                     });
                     if (result.code === 0) {
-                      const verifyCode = result.data?.verifyCode;
-                      if (verifyCode) {
-                        message.success(
-                          `获取验证码成功！验证码为：${verifyCode}`,
-                        );
-                      } else {
-                        message.success('获取验证码成功，请查收邮箱');
-                      }
+                      message.success('获取验证码成功，请查收邮箱');
                     } else {
                       message.error(
                         result.description ||

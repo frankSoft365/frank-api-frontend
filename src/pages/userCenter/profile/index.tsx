@@ -100,7 +100,6 @@ const Profile: React.FC = () => {
         username: currentUser.username,
         gender: currentUser.gender,
         phone: currentUser.phone,
-        email: currentUser.email,
       });
       setImageUrl(currentUser.avatar);
     }
@@ -108,12 +107,11 @@ const Profile: React.FC = () => {
 
   const onFinish = async (values: any) => {
     // 封装成对象
-    const { username, gender, phone, email } = values;
+    const { username, gender, phone } = values;
     const newUser = {
       username: username,
       gender: gender,
       phone: phone,
-      email: email,
       avatar: imageUrl,
     };
     console.log('将要编辑后的信息', newUser);
@@ -214,19 +212,7 @@ const Profile: React.FC = () => {
                   )}
                 </Upload>
               </Form.Item>
-              <Form.Item
-                name="email"
-                label="邮箱"
-                rules={[
-                  {
-                    pattern:
-                      /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*\.([a-zA-Z]{2,6})$/,
-                    message: '请输入正确的邮箱格式！',
-                  },
-                ]}
-              >
-                <Input style={{ width: '100%' }} />
-              </Form.Item>
+
               <Form.Item label={null}>
                 <Button
                   onClick={() => {
