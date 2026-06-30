@@ -71,6 +71,11 @@ export const errorConfig: RequestConfig = {
       if (response?.status === 401) {
         removeToken();
         message.error('登录状态失效，请重新登录！');
+        // 重定向到登录页
+        window.location.href = '/login';
+        // 重定向后，需要刷新当前页面
+        window.location.reload();
+        return response;
       }
       const { data } = response as unknown as ResponseStructure;
       if (data?.code !== 0) {

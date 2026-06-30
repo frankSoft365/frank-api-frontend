@@ -1,12 +1,9 @@
 ## 接口信息
 
-本文档仅收录两个接口：getMyName 与 SimpleHello。
-
 ### getMyName
 
 - 接口名称：getMyName
-- 路径：http://localhost:8123/api/getMyName
-- 接口 ID：2030307931321294849
+- 路径：/api/getMyName
 - 请求方法：POST
 - 描述：传递 name 参数，返回包含该名字的句子
 
@@ -58,10 +55,9 @@ public class FrankApiCall {
     @Resource
     private FrankApiClient frankApiClient;
 
-    public BaseApiResponse callApi() throws Exception {
+    public BaseApiResponse callApi() {
         User user = new User("frank");
-        long apiId = 2030307931321294849L;
-        BaseApiResponse baseApiResponse = frankApiClient.callGetMyName(user, apiId);
+        BaseApiResponse baseApiResponse = frankApiClient.callGetMyName(user);
         System.out.println(baseApiResponse);
         return baseApiResponse;
     }
@@ -71,8 +67,7 @@ public class FrankApiCall {
 ### SimpleHello
 
 - 接口名称：SimpleHello
-- 路径：http://localhost:8123/api/simpleHello
-- 接口 ID：2025807209132167169
+- 路径：/api/simpleHello
 - 请求方法：GET
 - 描述：输出 Hello World
 
@@ -121,9 +116,8 @@ public class FrankApiCall {
     @Resource
     private FrankApiClient frankApiClient;
 
-    public BaseApiResponse callApi() throws Exception {
-        long apiId = 2025807209132167169L;
-        BaseApiResponse baseApiResponse = frankApiClient.callSimpleHello(apiId);
+    public BaseApiResponse callApi() {
+        BaseApiResponse baseApiResponse = frankApiClient.callSimpleHello();
         System.out.println(baseApiResponse);
         return baseApiResponse;
     }

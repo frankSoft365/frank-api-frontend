@@ -269,3 +269,15 @@ export async function getUserCallDistributionVO(options?: { [key: string]: any }
     ...(options || {}),
   });
 }
+
+/** 发送邮箱验证码 POST /email/verification-code/send */
+export async function sendEmailVerificationCode(body: API.SendEmailVerificationCodeRequest, options?: { [key: string]: any }) {
+  return request<API.Result<API.SendMailResponse>>('/api/email/verification-code/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}

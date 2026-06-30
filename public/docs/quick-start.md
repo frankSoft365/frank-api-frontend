@@ -1,6 +1,15 @@
 ## 快速开始
 
+文档更新时间：2026-04-19
+
 ### 1. 获取 accessKey 与 secretKey 
+
+注册后，在 个人中心 -> AccessKey 查看 accessKey 与 secretKey。
+
+1. 选择“个人中心”
+2. 选择“AccessKey”
+3. 首次查看点击查看
+4. 保存 accessKey 与 secretKey
 
 ### 2. 安装 Maven 依赖
 
@@ -9,7 +18,7 @@
 <dependency>
     <groupId>com.microsoft</groupId>
     <artifactId>frank-api-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.6</version>
 </dependency>
 ```
 
@@ -22,12 +31,10 @@ frank:
     client:
       accessKeyId: 你的 accessKey
       accessKeySecret: 你的 secretKey
-      baseUrl: 接口服务器路径
+      baseUrl: 接口服务器IP
 ```
 
 ### 4. 调用示例
-
-frankApiClient 实例调用接口方法时必须传入接口id，接口id由[接口信息](#接口信息)查询获得。
 
 #### 测试代码：
 
@@ -43,9 +50,8 @@ public class TestFrankApiClient {
     @Resource
     private FrankApiClient frankApiClient;
     
-    public void testFrankApiClient() throws Exception {
-        // 2025807209132167169L 为该接口的id
-        BaseApiResponse baseApiResponse = frankApiClient.callSimpleHello(2025807209132167169L);
+    public void testFrankApiClient() {
+        BaseApiResponse baseApiResponse = frankApiClient.callSimpleHello();
         System.out.println(baseApiResponse);
     }
 }

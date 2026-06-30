@@ -1,11 +1,18 @@
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { LoginForm, ProFormText } from '@ant-design/pro-components';
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  LoginForm,
+  ProFormCaptcha,
+  ProFormText,
+} from '@ant-design/pro-components';
 import { Helmet, history } from '@umijs/max';
-import { App, Tabs } from 'antd';
+import { App, Form, Tabs } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { Footer } from '@/components';
-import { register } from '@/services/ant-design-pro/api';
+import {
+  register,
+  sendEmailVerificationCode,
+} from '@/services/ant-design-pro/api';
 import Settings from '../../../../config/defaultSettings';
 
 const useStyles = createStyles(({ token }) => {
@@ -47,6 +54,7 @@ const Register: React.FC = () => {
   const [type, setType] = useState<string>('account');
   const { styles } = useStyles();
   const { message } = App.useApp();
+  const [form] = Form.useForm();
   const handleSubmit = async (values: API.RegisterParams) => {
     // 两次输入的密码相同
     const { password, checkPassword } = values;
@@ -62,7 +70,7 @@ const Register: React.FC = () => {
       if (res.code === 0 && res.data > 0) {
         const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);
-        setInterval(() => (window.location.href = '/user/login'), 500);
+        setTimeout(() => (window.location.href = '/user/login'), 500);
         return;
       }
     } catch (error) {
@@ -85,6 +93,7 @@ const Register: React.FC = () => {
         }}
       >
         <LoginForm
+          form={form}
           contentStyle={{
             minWidth: 280,
             maxWidth: '75vw',
@@ -184,6 +193,91 @@ const Register: React.FC = () => {
                     message: '密码只能包含字母、数字或常见特殊字符！',
                   },
                 ]}
+              />
+              <ProFormText
+                name="email"
+                placeholder="请输入邮箱"
+                rules={[
+                  {
+                    required: true,
+                    message: '邮箱是必填项！',
+                  },
+                  {
+                    type: 'email',
+                    message: '邮箱格式错误！',
+                  },
+                ]}
+                fieldProps={{
+                  size: 'large',
+                  prefix: <MailOutlined />,
+                }}
+              />
+              <ProFormCaptcha
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined />,
+                }}
+                captchaProps={{
+                  size: 'large',
+                }}
+                placeholder={'请输入验证码！'}
+                captchaTextRender={(timing, count) => {
+                  if (timing) {
+                    return `${count} ${'秒后重新获取'}`;
+                  }
+                  return '获取验证码';
+                }}
+                phoneName="email"
+                name="verifyCode"
+                rules={[
+                  {
+                    required: true,
+                    message: '验证码是必填项！',
+                  },
+                ]}
+                onGetCaptcha={async () => {
+                  const formValues = form.getFieldsValue();
+                  const emailValue = formValues.email as string;
+
+                  if (!emailValue) {
+                    message.error('请先输入邮箱！');
+                    throw new Error('请先输入邮箱！');
+                  }
+
+                  const emailRegex =
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                  if (!emailRegex.test(emailValue)) {
+                    message.error('请输入正确的邮箱格式！');
+                    throw new Error('邮箱格式错误！');
+                  }
+
+                  try {
+                    const result = await sendEmailVerificationCode({
+                      email: emailValue,
+                    });
+                    if (result.code === 0) {
+                      message.success(
+                        `获取验证码成功！验证码为：${result.data.verifyCode}`,
+                      );
+                    } else {
+                      message.error(
+                        result.description ||
+                          result.message ||
+                          '发送验证码失败',
+                      );
+                      throw new Error(result.description || result.message);
+                    }
+                  } catch (error: any) {
+                    if (
+                      !error.message ||
+                      (!error.message.includes('请先输入') &&
+                        !error.message.includes('邮箱格式'))
+                    ) {
+                      message.error('发送验证码失败，请稍后重试');
+                    }
+                    throw error;
+                  }
+                }}
               />
             </>
           )}

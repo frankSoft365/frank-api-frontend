@@ -24,13 +24,6 @@ const InterfaceInfo: React.FC = () => {
     fetchData(pagination.current, pagination.pageSize, filters);
   }, [pagination.current, pagination.pageSize, filters]);
 
-  // 用于确认查询回显信息
-  // useEffect(() => {
-  //   if (interfaceInfo && showOnlineCallModal) {
-  //     console.log('interfaceinfo 状态更新为:', interfaceInfo);
-  //   }
-  // }, [interfaceInfo, showOnlineCallModal]);
-
   const columns = [
     {
       title: '接口名称',
@@ -137,7 +130,12 @@ const InterfaceInfo: React.FC = () => {
   return (
     <PageContainer>
       {/* 条件查询的条件筛选面板 */}
-      <QueryFilter onFinish={handleQuery} onReset={handleReset}>
+      <QueryFilter
+        onFinish={handleQuery}
+        onReset={handleReset}
+        span={5}
+        defaultCollapsed={false}
+      >
         <ProFormText
           name="name"
           label="接口名称"

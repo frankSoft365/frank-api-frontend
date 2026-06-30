@@ -155,6 +155,17 @@ declare namespace API {
     status?: string;
   };
 
+  // 发送邮箱验证码请求参数
+  type SendEmailVerificationCodeRequest = {
+    email: string;
+  };
+
+  // 发送邮箱验证码响应数据
+  type SendMailResponse = {
+    requestId: string;
+    verifyCode: string;
+  };
+
   type LoginParams = {
     userAccount?: string;
     password?: string;
@@ -165,6 +176,8 @@ declare namespace API {
     userAccount?: string;
     password?: string;
     checkPassword?: string;
+    email?: string;
+    verifyCode?: string;
   };
 
   // 接口监控概览请求参数
